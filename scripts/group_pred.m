@@ -14,6 +14,8 @@ function [ out ] = group_pred( y, inst_grp, fn, r )
             out = group_max(y, inst_grp);
         case 'prod'
             out = group_prod(y, inst_grp);
+        case 'lse'
+            out = group_lse(y, inst_grp, r);
     end
 
 end

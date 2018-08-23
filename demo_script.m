@@ -1,11 +1,11 @@
-addpath('scripts/')
+addpath('scripts')
 rng(1)
 
-data_dir = 'data/';
-results_dir = 'results/';
+data_dir = 'data';
+results_dir = 'results';
 mkdir(results_dir)
 
-load([data_dir 'demo_data.mat'])
+load([data_dir filesep 'demo_data.mat'])
 
 % Suppresses warnings from pdist when using cosine metric
 warning('off','stats:pdist:ZeroPoints')
@@ -29,12 +29,11 @@ sgd_settings.similarity_fcn = 'cos';
 sgd_settings.reg_fcn = 'l2';
 sgd_settings.lr = 0.1;
 
-sgd_settings.lambda1 = 1e0;    
-sgd_settings.lambda2 = 1e-2;   
-sgd_settings.lambda3 = 1e-2;   
-sgd_settings.lambda4 = 1e-1;
+sgd_settings.w1 = 1e-2;   
+sgd_settings.w2 = 1e-2;   
+sgd_settings.lambda = 1e-1;
 
-filename = [ results_dir 'demo_output' ];
+filename = [ results_dir filesep 'demo_output' ];
 
 theta_init = zeros(size(regionFeat,2)+1,1);
 theta = stochastic_gradient_descent_train(regionFeat, regionFeat, trainRegions_label, trainProts_label, ...

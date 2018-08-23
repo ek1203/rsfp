@@ -30,10 +30,9 @@ if isempty(sgd_settings)
     sgd_settings.gamma = 0.1;
     sgd_settings.lr = 0.1;
     
-    sgd_settings.lambda1 = 1e0;         % weight of group_cost
-    sgd_settings.lambda2 = 1e-1;        % weight of similarity_cost
-    sgd_settings.lambda3 = 1e-1;        % weight of instance_cost
-    sgd_settings.lambda4 = 1e-3;        % weight of regularization_cost
+    sgd_settings.w1 = 1e-1;        % weight of similarity_cost
+    sgd_settings.w2 = 1e-1;        % weight of instance_cost
+    sgd_settings.lambda = 1e-3;        % weight of regularization_cost
 end
 disp(sgd_settings)
 
@@ -99,10 +98,10 @@ for epoch=1:sgd_settings.epochs
             regularization_cost = [0; regularization_derivative(theta(2:end))];  % theta0 not calculated with regularization
         end
         
-        theta_der = (sgd_settings.lambda1/length(grp_labels_s)) * group_cost ...
-            + (sgd_settings.lambda2/N^2) * similarity_cost ...
-            + sgd_settings.lambda3 * instance_cost ...
-            + (sgd_settings.lambda4/length(grp_labels_s)) * regularization_cost;
+        theta_der = (1/length(grp_labels_s)) * group_cost ...
+            + (sgd_settings.w1/N^2) * similarity_cost ...
+            + sgd_settings.w2 * instance_cost ...
+            + (sgd_settings.lambda/length(grp_labels_s)) * regularization_cost;
         
         % update velocity and theta
         learning_rate_decay = ((1-sgd_settings.decay)^(floor(epoch/sgd_settings.decay_n)));     % decay after decay_n epochs
@@ -112,8 +111,8 @@ for epoch=1:sgd_settings.epochs
         % if L1-regularization term specified
         if strcmp(sgd_settings.reg_fcn, 'l1')
             theta_tmp = theta(2:end);
-            theta_tmp(theta_tmp > 0) = max(0, theta_tmp(theta_tmp>0) - (sgd_settings.lambda4/N)*sgd_settings.lr * learning_rate_decay);
-            theta_tmp(theta_tmp < 0) = min(0, theta_tmp(theta_tmp<0) + (sgd_settings.lambda4/N)*sgd_settings.lr * learning_rate_decay);
+            theta_tmp(theta_tmp > 0) = max(0, theta_tmp(theta_tmp>0) - (sgd_settings.lambda/N)*sgd_settings.lr * learning_rate_decay);
+            theta_tmp(theta_tmp < 0) = min(0, theta_tmp(theta_tmp<0) + (sgd_settings.lambda/N)*sgd_settings.lr * learning_rate_decay);
             theta(2:end) = theta_tmp;
         end
         
